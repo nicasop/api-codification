@@ -1,6 +1,5 @@
-from typing import Annotated
-from fastapi import APIRouter, UploadFile, File
-from fastapi.responses import JSONResponse, FileResponse,HTMLResponse
+from fastapi import APIRouter, UploadFile
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 
 from os import getcwd
 from codification import Codification
