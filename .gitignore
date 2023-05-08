@@ -1,0 +1,5 @@
+*.pyc
+/venv
+
+*.des
+desencripted_message.txt
