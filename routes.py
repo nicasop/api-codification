@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, UploadFile, HTTPException
 from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 
 from os import getcwd
@@ -28,28 +28,20 @@ async def upload_data(key: str, file: UploadFile):
         codification = Codification()
         
         if codification.encript_message(str_message,key):
-            return FileResponse(getcwd()+"/encripted.des",media_type="application/octet-stream",filename="encripted.des")
+            return FileResponse(getcwd()+"/encripted.des",media_type="text/plain",filename="encripted.des")
         else:
-            return JSONResponse(content={
-            "status": False,
-            "message": "Ha ocurrido un error durante la codificación"
-        }, status_code=500)
+            raise HTTPException(status_code=500, detail="Ha ocurrido un error durante la codificación")
     else:
-        return JSONResponse(content={
-            "status": False,
-            "message": "El mensaje es inferior en longitud a la clave"
-        }, status_code=500)
+        raise HTTPException(status_code=500, detail="El tamaño de la clave es superior al mensaje enviado")
 
 @router.post("/downloadMessage")
-async def desencript_message(file: UploadFile):
+async def desencript_message(key: str, file: UploadFile):
     content = await file.read()
     str_message = str(content, 'utf-8')
     codification = Codification()
     
-    if codification.desencript_message(str_message):
-        return FileResponse(getcwd()+"/desencripted_message.txt",media_type="application/octet-stream",filename="desencripted_message.txt")
+    if codification.desencript_message(str_message,key):
+        return FileResponse(getcwd()+"/desencripted_message.txt",media_type="text/plain",filename="desencripted_message.txt")
     else:
-        return JSONResponse(content={
-        "status": False,
-        "message": "Ha ocurrido un error durante la decodificación"
-    }, status_code=500)
+        print('error del error que no se quiere enviar')
+        raise HTTPException(status_code=500, detail="La clave no ha sido ingresada")

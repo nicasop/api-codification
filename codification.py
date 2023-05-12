@@ -50,9 +50,9 @@ class Codification:
 
     def encript_message(self,message,key):
         try:
-            with open(getcwd() + "/key.des", "w") as keyfile:
-                keyfile.write(key)
-                keyfile.close()
+            # with open(getcwd() + "/key.des", "w") as keyfile:
+            #     keyfile.write(key)
+            #     keyfile.close()
     
             ascii_message, ascii_key = self.transform_str_ascii(message,key)
             transformed_input = list(map(lambda code: self.transform_decimal_binary(code), ascii_message))
@@ -79,13 +79,11 @@ class Codification:
         except Exception as e:
             return False
     
-    def desencript_message(self,encripted_message):
+    def desencript_message(self,encripted_message,key):
         try:
-            with open(getcwd()+"/key.des", 'rb') as archivo:
-                lineas_archivo = archivo.readlines()
-                key =''.join(list(map(lambda le : str(le, 'utf-8'),lineas_archivo)))
-                archivo.close()
-
+            if key == "":
+                raise Exception("La contraseña no fue enviada")
+                
             ascii_message, ascii_key = self.transform_str_ascii(encripted_message,key)
             transformed_message_encripted = list(map(lambda code: self.transform_decimal_binary(code), ascii_message))
             transformed_key = list(map(lambda code: self.transform_decimal_binary(code), ascii_key))
@@ -108,6 +106,7 @@ class Codification:
                 archivo.close()
             return True
         except Exception as e:
+            print(e)
             return False
 
     
