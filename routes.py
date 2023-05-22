@@ -32,16 +32,19 @@ async def upload_data(key: str, file: UploadFile):
         else:
             raise HTTPException(status_code=500, detail="Ha ocurrido un error durante la codificación")
     else:
-        raise HTTPException(status_code=500, detail="El tamaño de la clave es superior al mensaje enviado")
+        raise HTTPException(status_code=501, detail="El tamaño de la clave es superior al mensaje enviado")
 
 @router.post("/downloadMessage")
 async def desencript_message(key: str, file: UploadFile):
+    
     content = await file.read()
     str_message = str(content, 'utf-8')
-    codification = Codification()
-    
-    if codification.desencript_message(str_message,key):
-        return FileResponse(getcwd()+"/desencripted_message.txt",media_type="text/plain",filename="desencripted_message.txt")
+    if len(str_message) >= len(key):
+        codification = Codification()
+        
+        if codification.desencript_message(str_message,key):
+            return FileResponse(getcwd()+"/desencripted_message.txt",media_type="text/plain",filename="desencripted_message.txt")
+        else:
+            raise HTTPException(status_code=500, detail="Ha ocurrido un error durante la decodificación")
     else:
-        print('error del error que no se quiere enviar')
-        raise HTTPException(status_code=500, detail="La clave no ha sido ingresada")
+        raise HTTPException(status_code=501, detail="El tamaño de la clave es superior al mensaje enviado")
